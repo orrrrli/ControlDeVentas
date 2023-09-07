@@ -11,6 +11,7 @@ export default {
 
   components: {
     HelloWorld
+    //cambiar el ponente hello word a uno de home
   }
 }
 </script>

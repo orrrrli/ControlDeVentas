@@ -136,7 +136,6 @@
       </template>
     </v-navigation-drawer>
     <v-content>
-      <h1 class="text-center success--text mt-10">Zona para trabajar el proyecto</h1>
       <router-view/>
     </v-content>
 <v-footer>
