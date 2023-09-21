@@ -1,17 +1,17 @@
 <template>
-  <hello-world />
+  <home />
 </template>
 
 <script>
-import HelloWorld from '../components/HelloWorld'
+import home from '@/components/home.vue'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Home',
 
   components: {
-    HelloWorld
-    //cambiar el ponente hello word a uno de home
+    home
+    // cambiar el ponente hello word a uno de home
   }
 }
 </script>
