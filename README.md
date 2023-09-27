@@ -74,7 +74,4 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
-
-Please note that you might need to adjust some parts of the README.txt file to match your project's specific configuration and requirements.
+This project was created as a practice for my university, but you can use it if it is useful to someone.
