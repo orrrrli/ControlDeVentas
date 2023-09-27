@@ -1,6 +1,4 @@
-Certainly! Here's a README.txt file for your Vue.js project:
 
-```plaintext
 # Categorias Management Web Application
 
 This project is a web application built with Vue.js for managing categories. It provides features for adding, editing, and deleting categories through a user-friendly interface. The application communicates with a backend API to perform CRUD (Create, Read, Update, Delete) operations on categories.
