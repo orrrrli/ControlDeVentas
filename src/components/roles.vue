@@ -30,6 +30,11 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="descripcionRol" label="Descripción"></v-text-field>
                   </v-col>
+                  <div v-if="ValidaMensajes.length > 0">
+                    <ul>
+                      <li v-for="message in ValidaMensajes" :key="message">{{ message }}</li>
+                    </ul>
+                </div>
                 </v-row>
               </v-container>
             </v-card-text>
@@ -80,21 +85,9 @@ import axios from 'axios'
 export default {
   data: () => ({
     roles: [], /* se creo un arreglo vacío */
-
-    validar () {
-      this.valida = 0
-      this.ValidaMensajes = []
-
-      if (this.nombreRol.length < 3 || this.nombreRol.length > 100) {
-        this.ValidaMensajes.push('El nombre del  Rol debe tener más de 3 caracteres y menos de 100')
-      }
-      if (this.ValidaMensajes.length) { this.valida = 1 }
-
-      return this.valida
-    },
-
     dialog: false,
     dialogDelete: false,
+    ValidaMensajes: [],
     headers: [
       { text: 'Nombre Roles', value: 'nombreRol', align: 'start', sortable: true },
       { text: 'Descripcion', value: 'descripcionRol', sortable: true },
@@ -233,7 +226,17 @@ export default {
       }
       this.close()
     },
+    validar () {
+      this.valida = 0
+      this.ValidaMensajes = []
 
+      if (this.nombreRol.length < 3 || this.nombreRol.length > 100) {
+        this.ValidaMensajes.push('El nombre del  Rol debe tener más de 3 caracteres y menos de 100')
+      }
+      if (this.ValidaMensajes.length) { this.valida = 1 }
+
+      return this.valida
+    },
     LimpiarModal () {
       this.idRol = ''
       this.nombreRol = ''

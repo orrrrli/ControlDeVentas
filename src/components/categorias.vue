@@ -4,10 +4,14 @@
 <template>
 <!-- eslint-disable vue/valid-v-slot -->
 
-  <v-data-table :headers="headers" :items="categorias" sort-by="nombreCategorias" class="elevation-1">
+  <v-data-table :headers="headers" :items="categorias" :search="search" sort-by="nombreCategorias" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Categorias</v-toolbar-title>
+        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer></v-spacer>
+        <v-text-field class="text-center" v-model="search" append-icon="search" label="Busqueda"
+        single-line hide-details></v-text-field>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -31,6 +35,11 @@
                     <v-text-field v-model="descripcion" label="Descripción"></v-text-field>
                   </v-col>
                 </v-row>
+                <div v-if="ValidaMensajes.length > 0">
+                  <ul>
+                    <li v-for="message in ValidaMensajes" :key="message">{{ message }}</li>
+                  </ul>
+                </div>
               </v-container>
             </v-card-text>
 
@@ -62,9 +71,12 @@
       <v-icon small class="mr-2" @click="editItem(item)">
         mdi-pencil
       </v-icon>
-      <v-icon small @click="deleteItem(item)">
-        mdi-delete
-      </v-icon>
+      <template v-if ="item.estado">
+        <v-icon medium color="green darken-2" class="mr-2" size="x-large" @click="modalActivarDesactivar(2,item)">check_cirlce</v-icon>
+      </template>
+      <template v-else>
+        <v-icon medium color="red darken-2" class="mr-2" size="x-large" @click="modalActivarDesactivar(1,item)">cancel</v-icon>
+      </template>
     </template>
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize">
@@ -80,21 +92,16 @@ import axios from 'axios'
 export default {
   data: () => ({
     categorias: [], /* se creo un arreglo vacío */
-
-    validar () {
-      this.valida = 0
-      this.ValidaMensajes = []
-
-      if (this.nombreCategorias.length < 3 || this.nombreCategorias.length > 100) {
-        this.ValidaMensajes.push('El nombre de la categorias debe tener más de 3 caracteres y menos de 100')
-      }
-      if (this.ValidaMensajes.length) { this.valida = 1 }
-
-      return this.valida
-    },
-
+    search: '',
     dialog: false,
     dialogDelete: false,
+    valida: 0,
+    ValidaMensajes: [],
+    adModal: 0,
+    adAccion: 0,
+    adNomnre: '',
+    adIdCategorias: '',
+
     headers: [
       { text: 'Nombre Categorias', value: 'nombreCategorias', align: 'start', sortable: true },
       { text: 'Descripcion', value: 'descripcion', sortable: true },
@@ -170,6 +177,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
+      this.LimpiarModal()
     },
 
     closeDelete () {
@@ -222,6 +230,55 @@ export default {
       this.idCategorias = ''
       this.nombreCategorias = ''
       this.descripcion = ''
+    },
+    validar () {
+      this.valida = 0
+      this.ValidaMensajes = []
+
+      if (this.nombreCategorias.length < 3 || this.nombreCategorias.length > 100) {
+        this.ValidaMensajes.push('El nombre de la categorias debe tener más de 3 caracteres y menos de 100')
+      }
+      if (this.ValidaMensajes.length) { this.valida = 1 }
+
+      return this.ValidaMensajes
+    },
+    modalActivarDesactivar (accion, item) {
+      this.adModal = 1
+      this.adIdCategorias = item.idCategorias
+      this.adNomnre = item.nombreCategorias
+      if (accion === 1) {
+        this.adAccion = 1
+      } else if (accion === 2) {
+        this.adAccion = 2
+      } else {
+        this.adModal = 0
+      }
+    },
+    activar () {
+      const me = this
+      axios.put('api/Categorias/ActivarCategoria/' + this.adIdCategorias, {}).then(function (response) {
+        me.adModal = 0
+        me.adAccion = 0
+        me.adNombre = ''
+        me.adIdCategorias = ''
+        me.close()
+        me.ListadoCategorias()
+      }).catch(function (error) {
+        console.log(error)
+      })
+    },
+    desactivar () {
+      const me = this
+      axios.put('api/Categorias/DesactivarCategoria/' + this.adIdCategorias, {}).then(function (response) {
+        me.adModal = 0
+        me.adAccion = 0
+        me.adNombre = ''
+        me.adIdCategorias = ''
+        me.close()
+        me.ListadoCategorias()
+      }).catch(function (error) {
+        console.log(error)
+      })
     }
 
   }
