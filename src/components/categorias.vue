@@ -54,6 +54,22 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-dialog v-model="adModal" max-width="350px">
+          <v-card>
+            <v-card-title class="headline" v-if="adAccion === 1">Desactivar Categorias</v-card-title>
+            <v-card-title class="headline" v-if="adAccion === 2">Activar Categorias</v-card-title>
+            <v-card-text> Vas a
+            <span v-if="adAccion === 1">Activar la categorias</span>
+            <span v-if="adAccion === 2">Desactivar la categorias</span>
+             la categoria{{adNomnre}}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="ActivarDesactivarCerrar">Cancelar</v-btn>
+            <v-btn color="succes darken-1" text v-if="adAccion === 1" @click="activar">Activar</v-btn>
+            <v-btn color="error darken-1" text v-if="adAccion === 2" @click="desactivar">Desactivar</v-btn>
+          </v-card-actions>
+          </v-card>
+        </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
@@ -279,8 +295,10 @@ export default {
       }).catch(function (error) {
         console.log(error)
       })
+    },
+    ActivarDesactivarCerrar () {
+      this.adModal = 0
     }
-
   }
 }
 </script>
