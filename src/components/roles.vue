@@ -97,6 +97,9 @@
       <template v-else="item.estado">
         <v-icon medium color="red darker-2" class="mr-2" @click="modalActivarDesactivar(1,item)"> cancel</v-icon>
       </template>
+      <v-icon medium @click="deleteItem(item)">
+        mdi-delete
+      </v-icon>
     </template>
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize">

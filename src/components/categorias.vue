@@ -61,7 +61,7 @@
               Vas a
                 <span v-if="adAccion==1"> Activar </span>
                 <span v-if="adAccion==2"> Desactivar </span>
-                la categoria {{ adNombre }},
+                la categoria {{ adNombre }}
             </v-card-text>
 
             <v-card-actions>
@@ -288,7 +288,7 @@ export default {
       } else {
         // Sección para Guardar los datos de una nueva categoria
         const me = this
-        axios.post('api/Categorias/InsertarCategoria',
+        axios.post('api/Categorias/InsertarCategorias',
           {
             nombreCategorias: me.nombreCategorias,
             descripcion: me.descripcion
