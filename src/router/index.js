@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import categoria from '../components/categorias.vue'
-import articulos from '../components/articulos.vue'
-import ventas from '../components/ventas.vue'
-import clientes from '../components/clientes.vue'
-import roles from '../components/roles.vue'
-import usuarios from '../components/usuarios.vue'
-import compras from '../components/compras.vue'
-import consultaVentas from '../components/consultaVentas.vue'
+import categoria from '../components/Almacen/categorias.vue'
+import articulos from '../components/Almacen/articulos.vue'
+import ventas from '../components/Ventas/ventas.vue'
+import clientes from '../components/Ventas/clientes.vue'
+import roles from '../components/Usuarios/roles.vue'
+import usuarios from '../components/Usuarios/usuarios.vue'
+import compras from '../components/Consultas/compras.vue'
+import consultaVentas from '../components/Consultas/consultaVentas.vue'
 
 Vue.use(VueRouter)
 

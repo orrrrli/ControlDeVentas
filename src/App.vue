@@ -3,7 +3,7 @@
   <v-app id="inspire">
     <v-content>
       <v-card height="90" width="100%" class="text-center white--text" color="blue darken-4">
-        <h3 class="pt-10">Sistema para el control de Ventas</h3>
+        <h3 class="pt-5" style="font-size: 35px;">Ventas360</h3>
       </v-card>
     </v-content>
 
@@ -60,7 +60,7 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
-                  Ventas
+                  Gestion de Proveedores
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>

@@ -53,6 +53,11 @@
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field v-model="password" type="password" label="Contraseña"></v-text-field>
                     </v-col>
+                    <div v-if="ValidaMensajes.length > 0">
+                    <ul>
+                      <li v-for="message in ValidaMensajes" :key="message" class="red--text">{{ message }}</li>
+                    </ul>
+                  </div>
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -118,6 +123,8 @@ export default {
     search: '',
     usuarios: [], /* se creo un arreglo vacío */
 
+    valida: 0,
+    ValidaMensajes: [],
     idUsuario: '',
     idRol: '',
     roles: [],
@@ -150,38 +157,6 @@ export default {
       { text: 'Teléfono', value: 'telefono' },
       { text: 'Acciones', value: 'actions', sortable: false }
     ],
-
-    validar () {
-      this.valida = 0
-      this.ValidaMensajes = []
-
-      if (this.nombreUsuario.length < 3 || this.nombreUsuario.length > 150) { this.ValidaMensajes.push('El nombre del artículo debe tener más de 3 caracteres y menos de 150') }
-
-      if (!this.idRol) { this.ValidaMensajes.push('Seleccione un rol') }
-
-      if (!this.email) { this.ValidaMensajes.push('Debe capturar un email') }
-
-      if (!this.password) { this.ValidaMensajes.push('Debe capturar una contraseña') }
-
-      if (this.ValidaMensajes.length) { this.valida = 1 }
-
-      return this.valida
-    },
-
-    modalActivarDesactivar (accion, item) {
-      this.adModal = 1
-      this.adIdUsuario = item.idUsuario
-      this.adNombreUsuario = item.nombreUsuario
-
-      if (accion === 1) {
-        this.adAccion = 1
-      } else if (accion === 2) {
-        this.adAccion = 2
-      } else {
-        this.adAccion = 0
-      }
-    },
-
     editedIndex: -1,
     editedItem: {
 
@@ -304,6 +279,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
+      this.LimpiarModal()
     },
 
     closeDelete () {
@@ -312,6 +288,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
+      this.LimpiarModal()
     },
 
     Grabar () {
@@ -372,15 +349,45 @@ export default {
     LimpiarModal () {
       this.idUsuario = ''
       this.idRol = ''
-
+      this.nombreUsuario = ''
+      this.ValidaMensajes = []
       this.tipoDocumento = ''
       this.numeroDocumento = ''
       this.direccion = ''
       this.email = ''
       this.telefono = ''
       this.password = ''
-    }
+    },
+    validar () {
+      this.valida = 0
+      this.ValidaMensajes = []
 
+      if (this.nombreUsuario.length < 3 || this.nombreUsuario.length > 150) { this.ValidaMensajes.push('El nombre del usuario debe tener más de 3 caracteres y menos de 150') }
+
+      if (!this.idRol) { this.ValidaMensajes.push('Seleccione un rol') }
+
+      if (!this.email) { this.ValidaMensajes.push('Debe capturar un email') }
+
+      if (!this.password) { this.ValidaMensajes.push('Debe capturar una contraseña') }
+
+      if (this.ValidaMensajes.length) { this.valida = 1 }
+
+      return this.valida
+    },
+
+    modalActivarDesactivar (accion, item) {
+      this.adModal = 1
+      this.adIdUsuario = item.idUsuario
+      this.adNombreUsuario = item.nombreUsuario
+
+      if (accion === 1) {
+        this.adAccion = 1
+      } else if (accion === 2) {
+        this.adAccion = 2
+      } else {
+        this.adAccion = 0
+      }
+    }
   }
 }
 </script>

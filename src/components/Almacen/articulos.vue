@@ -50,9 +50,9 @@
                   </v-col>
                   <div v-if="ValidaMensajes.length > 0">
                     <ul>
-                      <li v-for="message in ValidaMensajes" :key="message">{{ message }}</li>
+                      <li v-for="message in ValidaMensajes" :key="message" class="red--text">{{ message }}</li>
                     </ul>
-                </div>
+                  </div>
                 </v-row>
               </v-container>
             </v-card-text>
@@ -134,10 +134,11 @@ import axios from 'axios'
 export default {
   data: () => ({
     search: '',
+    valida: 0,
+    ValidaMensajes: [],
     articulos: [], /* se creo un arreglo vacío */
     IdCategorias: '',
     categorias: [],
-    ValidaMensajes: [],
     adModal: 0,
     adAccion: 0,
     adNombre: '',
@@ -155,41 +156,6 @@ export default {
       { text: 'Stock', value: 'stock' },
       { text: 'Accion', value: 'actions', sortable: false }
     ],
-
-    validar () {
-      this.valida = 0
-      this.ValidaMensajes = []
-
-      if (this.nombreArticulo.length < 3 || this.nombreArticulo.length > 150) {
-        this.ValidaMensajes.push('El nombre del artículo debe tener más de 3 caracteres y menos de 150')
-      }
-
-      if (this.codigoArticulo.length <= 0) { this.ValidaMensajes.push('Debe capturar el código del artículo') }
-
-      if (!this.idCategoria) { this.ValidaMensajes.push('Seleccione alguna categoria') }
-
-      if (!this.stock || this.stock <= 0) { this.ValidaMensajes.push('EL stock debe ser mayor a cero') }
-
-      if (!this.precioArticulo || this.precioArticulo <= 0) { this.ValidaMensajes.push('Aquí no fiamos, el precio de venta debe ser mayor a 0') }
-
-      if (this.ValidaMensajes.length) { this.valida = 1 }
-
-      return this.valida
-    },
-
-    modalActivarDesactivar (accion, item) {
-      this.adModal = 1
-      this.adIdArticulo = item.idArticulos
-      this.adNombre = item.nombreArticulo
-
-      if (accion === 1) {
-        this.adAccion = 1
-      } else if (accion === 2) {
-        this.adAccion = 2
-      } else {
-        this.adAccion = 0
-      }
-    },
 
     editedIndex: -1,
     editedItem: {
@@ -336,6 +302,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
+      this.LimpiarModal()
     },
 
     closeDelete () {
@@ -366,11 +333,10 @@ export default {
           }).then(function (response) {
           me.close()
           me.ListadoArticulos()
-          me.LimpiarModal()
         }).catch(function (error) {
           console.log(error)
         })
-
+        me.LimpiarModal()
         // Sección para editar los datos
       } else {
         // Sección para Guardar los datos de una nueva categoria
@@ -393,13 +359,53 @@ export default {
           console.log(error)
         })
       }
+      this.LimpiarModal()
       this.close()
     },
 
     LimpiarModal () {
       this.idCategoria = ''
-      this.nombreCategoria = ''
-      this.descripcion = ''
+      this.idArticulo = ''
+      this.nombreArticulo = ''
+      this.codigoArticulo = ''
+      this.precioArticulo = ''
+      this.stock = ''
+      this.descripcionArticulo = ''
+      this.ValidaMensajes = []
+    },
+    validar () {
+      this.valida = 0
+      this.ValidaMensajes = []
+
+      if (this.nombreArticulo.length < 3 || this.nombreArticulo.length > 150) {
+        this.ValidaMensajes.push('El nombre del artículo debe tener más de 3 caracteres y menos de 150')
+      }
+
+      if (this.codigoArticulo.length <= 0) { this.ValidaMensajes.push('Debe capturar el código del artículo') }
+
+      if (!this.idCategoria) { this.ValidaMensajes.push('Seleccione alguna categoria') }
+
+      if (!this.stock || this.stock <= 0) { this.ValidaMensajes.push('EL stock debe ser mayor a cero') }
+
+      if (!this.precioArticulo || this.precioArticulo <= 0) { this.ValidaMensajes.push('Aquí no fiamos, el precio de venta debe ser mayor a 0') }
+
+      if (this.ValidaMensajes.length) { this.valida = 1 }
+
+      return this.valida
+    },
+
+    modalActivarDesactivar (accion, item) {
+      this.adModal = 1
+      this.adIdArticulo = item.idArticulos
+      this.adNombre = item.nombreArticulo
+
+      if (accion === 1) {
+        this.adAccion = 1
+      } else if (accion === 2) {
+        this.adAccion = 2
+      } else {
+        this.adAccion = 0
+      }
     }
 
   }
