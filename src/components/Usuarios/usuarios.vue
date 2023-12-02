@@ -150,7 +150,7 @@ export default {
     dialogDelete: false,
     headers: [
       { text: 'Nombre Usuario', value: 'nombreUsuario', align: 'start', sortable: true },
-      { text: 'Rol', value: 'rol', align: 'start', sortable: true },
+      { text: 'Rol', value: 'nombreRol', align: 'start', sortable: true },
       { text: 'Tipo Documento', value: 'tipoDocumento', align: 'start', sortable: true },
       { text: 'Numero de Documento', value: 'numeroDocumento', align: 'start' },
       { text: 'Email', value: 'email' },
