@@ -133,6 +133,25 @@
             </v-list-item-content>
           </v-list-item>
           </v-list-group>
+          <v-list-group>
+            <v-list-item slot="activator">
+            <v-list-item-content>
+              <v-list-item-title>
+                Ingresos
+              </v-list-item-title>
+            </v-list-item-content>
+            </v-list-item>
+          <v-list-item :to="{ name: 'Ingresos'}">
+            <v-list-item-action>
+              <v-icon>table_chart</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                Ver Ingresos
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          </v-list-group>
       </template>
     </v-navigation-drawer>
     <v-content>

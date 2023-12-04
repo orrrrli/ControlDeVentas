@@ -29,7 +29,7 @@
 
             <v-card-text>
               <v-container>
-                <v-row>
+                <v-row >
                   <v-col cols="12" sm="6" md="4">
                     <v-select v-model="idCategoria" :items="categorias" label="Categoria"></v-select>
                   </v-col>
@@ -104,20 +104,22 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">
-        mdi-pencil
-      </v-icon>
+      <div style="display: flex; justify-content: center;">
+        <v-icon medium class="mr-2" @click="editItem(item)">
+          mdi-pencil
+        </v-icon>
 
-      <!--Íconos de ESTADO-->
-      <template v-if="item.estado">
-        <v-icon medium color="green darker-2" class="mr-2" @click="modalActivarDesactivar(2,item)"> check_circle</v-icon>
-      </template>
-      <template v-else="item.estado">
-        <v-icon medium color="red darker-2" class="mr-2" @click="modalActivarDesactivar(1,item)"> cancel</v-icon>
-      </template>
-      <v-icon medium @click="deleteItem(item)">
-        mdi-delete
-      </v-icon>
+        <!--Íconos de ESTADO-->
+        <template v-if="item.estado">
+          <v-icon medium color="green darker-2" class="mr-2" @click="modalActivarDesactivar(2,item)" style="display: inline-flex;"> check_circle</v-icon>
+        </template>
+        <template v-else="item.estado">
+          <v-icon medium color="red darker-2" class="mr-2" @click="modalActivarDesactivar(1,item)"> cancel</v-icon>
+        </template>
+        <v-icon medium @click="deleteItem(item)">
+          mdi-delete
+        </v-icon>
+    </div>
     </template>
 
     <template v-slot:no-data>

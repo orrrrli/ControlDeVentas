@@ -9,6 +9,7 @@ import roles from '../components/Usuarios/roles.vue'
 import usuarios from '../components/Usuarios/usuarios.vue'
 import compras from '../components/Consultas/compras.vue'
 import consultaVentas from '../components/Consultas/consultaVentas.vue'
+import Ingresos from '../components/Compras/Ingresos.vue'
 
 Vue.use(VueRouter)
 
@@ -57,6 +58,11 @@ const routes = [
     path: '/consultaVentas',
     name: 'consultaVentas',
     component: consultaVentas
+  },
+  {
+    path: '/Ingresos',
+    name: 'Ingresos',
+    component: Ingresos
   }
 ]
 
