@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
-<!-- eslint-disable array-callback-return -->
 <!-- eslint-disable vue/valid-v-slot -->
-<!-- eslint-disable vue/valid-v-else -->
+<!-- eslint-disable array-callback-return -->
+<!-- eslint-disable new-cap -->
 <template>
-  <v-data-table :headers="headers" :items="articulos" :search="search" sort-by="nombreArticulos" class="elevation-1">
+  <v-data-table :headers="headers" :items="articulos" :search="search" sort-by="nombreArticulo" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <!---->
@@ -15,13 +15,16 @@
           <v-text-field class="text-center" v-model="search" append-icon="search" label="Búsqueda" single-line hide-details></v-text-field>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
-``
+          <v-btn color="primary darken-2" @click="ListadoArticulosPDF()"><v-icon>print</v-icon></v-btn>
+          <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               Nuevo Artículo
             </v-btn>
+
           </template>
+
           <v-card>
             <v-card-title>
               <span class="text-h5">{{formTitle}}</span>
@@ -29,7 +32,7 @@
 
             <v-card-text>
               <v-container>
-                <v-row >
+                <v-row>
                   <v-col cols="12" sm="6" md="4">
                     <v-select v-model="idCategoria" :items="categorias" label="Categoria"></v-select>
                   </v-col>
@@ -40,7 +43,7 @@
                     <v-text-field v-model="nombreArticulo" label="Nombre"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="precioArticulo" label="Precio de Articulo"></v-text-field>
+                    <v-text-field v-model="precioVenta" label="Precio de Venta"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="stock" label="Stock"></v-text-field>
@@ -48,11 +51,6 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="descripcionArticulo" label="Descripción"></v-text-field>
                   </v-col>
-                  <div v-if="ValidaMensajes.length > 0">
-                    <ul>
-                      <li v-for="message in ValidaMensajes" :key="message" class="red--text">{{ message }}</li>
-                    </ul>
-                  </div>
                 </v-row>
               </v-container>
             </v-card-text>
@@ -78,7 +76,7 @@
               Vas a
                 <span v-if="adAccion==1"> Activar </span>
                 <span v-if="adAccion==2"> Desactivar </span>
-                el Artículo {{ adNombre }}
+                el Artículo {{ adNombre }},
             </v-card-text>
 
             <v-card-actions>
@@ -104,22 +102,23 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <div style="display: flex; justify-content: center;">
-        <v-icon medium class="mr-2" @click="editItem(item)">
+      <div style="display: flex;">
+        <v-icon medium color="primary darken-1" class="mr-2" size="x-large" @click="editItem(item)">
           mdi-pencil
         </v-icon>
 
         <!--Íconos de ESTADO-->
         <template v-if="item.estado">
-          <v-icon medium color="green darker-2" class="mr-2" @click="modalActivarDesactivar(2,item)" style="display: inline-flex;"> check_circle</v-icon>
+          <v-icon medium color="green darken-2" class="mr-2" size="x-large" @click="modalActivarDesactivar(2, item)">
+            check_circle
+          </v-icon>
         </template>
-        <template v-else="item.estado">
-          <v-icon medium color="red darker-2" class="mr-2" @click="modalActivarDesactivar(1,item)"> cancel</v-icon>
+        <template v-else>
+          <v-icon medium color="red darken-2" class="mr-2" size="x-large" @click="modalActivarDesactivar(1, item)">
+            cancel
+          </v-icon>
         </template>
-        <v-icon medium @click="deleteItem(item)">
-          mdi-delete
-        </v-icon>
-    </div>
+      </div>
     </template>
 
     <template v-slot:no-data>
@@ -132,16 +131,16 @@
 
 <script>
 import axios from 'axios'
-
+import jsPDF from 'jspdf'
+// eslint-disable-next-line no-unused-vars
+import autoTable from 'jspdf-autotable'
 export default {
   data: () => ({
     search: '',
-    valida: 0,
-    ValidaMensajes: [],
-
-    articulos: [], /* se creo un arreglo vacío */
-    IdCategorias: '',
+    articulos: [],
+    idCategoria: '',
     categorias: [],
+
     adModal: 0,
     adAccion: 0,
     adNombre: '',
@@ -152,22 +151,54 @@ export default {
     headers: [
       { text: 'Nombre Artículo', value: 'nombreArticulo', align: 'start', sortable: true },
       { text: 'Código', value: 'codigoArticulo', align: 'start', sortable: true },
-      { text: 'Categoria', value: 'nombreCategoria', align: 'start', sortable: true },
-      { text: 'Precio', value: 'precioArticulo', align: 'start' },
-      { text: 'Id Categoria', value: 'idCategorias', align: 'start' },
+      { text: 'Categoria', value: 'categoria', align: 'start', sortable: true },
+      { text: 'Precio de Venta', value: 'precioVenta', align: 'start' },
       { text: 'Descripcion', value: 'descripcionArticulo', sortable: true },
       { text: 'Stock', value: 'stock' },
       { text: 'Accion', value: 'actions', sortable: false }
     ],
 
+    validar () {
+      this.valida = 0
+      this.ValidaMensajes = []
+
+      if (this.nombreArticulo.length < 3 || this.nombreArticulo.length > 150) { this.ValidaMensajes.push('El nombre del artículo debe tener más de 3 caracteres y menos de 150') }
+
+      if (this.codigoArticulo.length <= 0) { this.ValidaMensajes.push('Debe capturar el código del artículo') }
+
+      if (!this.idCategoria) { this.ValidaMensajes.push('Seleccione alguna categoria') }
+
+      if (!this.stock || this.stock <= 0) { this.ValidaMensajes.push('EL stock debe ser mayor a cero') }
+
+      if (!this.precioVenta || this.precioVenta <= 0) { this.ValidaMensajes.push('Aquí no fiamos, el precio de venta debe ser mayor a 0') }
+
+      if (this.ValidaMensajes.length) { this.valida = 1 }
+
+      return this.valida
+    },
+
+    modalActivarDesactivar (accion, item) {
+      this.adModal = 1
+      this.adIdArticulo = item.idArticulo
+      this.adNombre = item.nombreArticulo
+
+      if (accion === 1) {
+        this.adAccion = 1
+      } else if (accion === 2) {
+        this.adAccion = 2
+      } else {
+        this.adAccion = 0
+      }
+    },
+
     editedIndex: -1,
     editedItem: {
 
       idArticulo: '',
-      idCategorias: 0,
+      idCategoria: 0,
       codigoArticulo: '',
       nombreArticulo: '',
-      precioArticulo: 0,
+      precioVenta: 0,
       stock: 0,
       descripcionArticulo: '',
       estado: true
@@ -205,7 +236,9 @@ export default {
         LstCategorias = response.data
         // eslint-disable-next-line array-callback-return
         LstCategorias.map(function (c) {
-          me.categorias.push({ text: c.nombreCategorias, value: c.idCategorias })
+          me.categorias.push({ text: c.nombreCategoria, value: c.idCategoria })
+          console.log(LstCategorias)
+          console.log(me.categorias)
         })
       }).catch(function (error) {
         console.log(error)
@@ -214,7 +247,7 @@ export default {
 
     ListadoArticulos () {
       const Lista = this
-      axios.get('api/Articulos/ListarArticulos').then(function (response) {
+      axios.get('api/Articulos/ListarArticulo').then(function (response) {
         console.log(response)
         Lista.articulos = response.data
       }).catch(function (error) {
@@ -255,16 +288,16 @@ export default {
     },
 
     initialize () {
-
+      console.log(this.categorias)
     },
 
     editItem (item) {
-      this.idArticulo = item.idArticulos
-      this.idCategoria = item.idCategorias
+      this.idArticulo = item.idArticulo
+      this.idCategoria = item.idCategoria
       this.nombreArticulo = item.nombreArticulo
       this.codigoArticulo = item.codigoArticulo
 
-      this.precioArticulo = item.precioArticulo
+      this.precioVenta = item.precioVenta
       this.descripcionArticulo = item.descripcionArticulo
       this.stock = item.stock
       this.estado = item.estado
@@ -274,28 +307,13 @@ export default {
     },
 
     deleteItem (item) {
-      this.editedIndex = this.articulos.indexOf(item)
+      this.editedIndex = this.desserts.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm () {
-      const me = this
-      // Elimina el elemento de la lista roles en el índice especificado
-      this.articulos.splice(this.editedIndex, 1)
-
-      // Realiza la solicitud de eliminación utilizando Axios
-      axios.delete(`api/Articulos/BorrarArticulo/${this.editedItem.idArticulos}`)
-        .then(response => {
-          // Procesa la respuesta si es necesario
-          me.ListadoRoles()
-        })
-        .catch(error => {
-          // Maneja errores si es necesario
-          console.log(error)
-        })
-
-      // Cierra el diálogo de eliminación
+      this.desserts.splice(this.editedIndex, 1)
       this.closeDelete()
     },
 
@@ -304,8 +322,8 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+        this.LimpiarModal()
       })
-      this.LimpiarModal()
     },
 
     closeDelete () {
@@ -324,32 +342,34 @@ export default {
         const me = this
         axios.put('api/Articulos/ModificarArticulos',
           {
-            idArticulos: me.idArticulo,
-            idCategorias: me.idCategoria,
+            idArticulo: me.idArticulo,
+            idCategoria: parseInt(me.idCategoria),
             codigoArticulo: me.codigoArticulo,
             nombreArticulo: me.nombreArticulo,
-            precioArticulo: me.precioArticulo,
-            stock: me.stock,
+            precioVenta: parseFloat(me.precioVenta),
+            stock: parseInt(me.stock),
             descripcionArticulo: me.descripcionArticulo,
             estado: true
 
           }).then(function (response) {
           me.close()
           me.ListadoArticulos()
+          me.LimpiarModal()
         }).catch(function (error) {
           console.log(error)
         })
-        me.LimpiarModal()
+
         // Sección para editar los datos
       } else {
         // Sección para Guardar los datos de una nueva categoria
         const me = this
-        axios.post('api/Articulos/InsertarArticulo',
+        axios.post('api/Articulos/InsertarArticulos',
           {
-            idCategorias: parseInt(me.idCategoria),
+
+            idCategoria: parseInt(me.idCategoria),
             codigoArticulo: me.codigoArticulo,
             nombreArticulo: me.nombreArticulo,
-            precioArticulo: parseFloat(me.precioArticulo),
+            precioVenta: parseFloat(me.precioVenta),
             stock: parseInt(me.stock),
             descripcionArticulo: me.descripcionArticulo,
             estado: true
@@ -362,53 +382,49 @@ export default {
           console.log(error)
         })
       }
-      this.LimpiarModal()
       this.close()
     },
 
     LimpiarModal () {
-      this.idCategoria = ''
       this.idArticulo = ''
-      this.nombreArticulo = ''
+      this.idCategoria = 0
       this.codigoArticulo = ''
-      this.precioArticulo = ''
-      this.stock = ''
+      this.nombreArticulo = ''
+      this.precioVenta = 0
+      this.stock = 0
       this.descripcionArticulo = ''
-      this.ValidaMensajes = []
-    },
-    validar () {
-      this.valida = 0
-      this.ValidaMensajes = []
-
-      if (this.nombreArticulo.length < 3 || this.nombreArticulo.length > 150) {
-        this.ValidaMensajes.push('El nombre del artículo debe tener más de 3 caracteres y menos de 150')
-      }
-
-      if (this.codigoArticulo.length <= 0) { this.ValidaMensajes.push('Debe capturar el código del artículo') }
-
-      if (!this.idCategoria) { this.ValidaMensajes.push('Seleccione alguna categoria') }
-
-      if (!this.stock || this.stock <= 0) { this.ValidaMensajes.push('EL stock debe ser mayor a cero') }
-
-      if (!this.precioArticulo || this.precioArticulo <= 0) { this.ValidaMensajes.push('Aquí no fiamos, el precio de venta debe ser mayor a 0') }
-
-      if (this.ValidaMensajes.length) { this.valida = 1 }
-
-      return this.valida
+      this.estado = true
     },
 
-    modalActivarDesactivar (accion, item) {
-      this.adModal = 1
-      this.adIdArticulo = item.idArticulos
-      this.adNombre = item.nombreArticulo
-
-      if (accion === 1) {
-        this.adAccion = 1
-      } else if (accion === 2) {
-        this.adAccion = 2
-      } else {
-        this.adAccion = 0
-      }
+    ListadoArticulosPDF () {
+      const columnas = [
+        { title: 'Nombre', dataKey: 'nombreArticulo' },
+        { title: 'Codigo', dataKey: 'codigoArticulo' },
+        { title: 'Categoria', dataKey: 'categoria' },
+        { title: 'Stock', dataKey: 'stock' },
+        { title: 'Precio Venta', dataKey: 'precioVenta' }
+      ]
+      const renglones = []
+      // eslint-disable-next-line array-callback-return
+      this.articulos.map(function (a) {
+        renglones.push({
+          nombreArticulo: a.nombreArticulo,
+          codigoArticulo: a.codigoArticulo,
+          categoria: a.categoria,
+          stock: a.stock,
+          precioVenta: a.precioVenta
+        })
+      })
+      // eslint-disable-next-line new-cap
+      const doc = new jsPDF('p', 'pt')
+      doc.autoTable(columnas, renglones, {
+        margin: { top: 60 },
+        addPageContent: function (data) {
+          doc.text('Facultad de Ingenieria Arquitectura y Diseño', 150, 30)
+          doc.text('Listado de Articulos', 200, 50)
+        }
+      })
+      doc.save('Lista de Articulos.pdf')
     }
 
   }

@@ -8,7 +8,7 @@ import 'mdi/css/materialdesignicons.min.css'
 import axios from 'axios'
 
 Vue.config.productionTip = false
-axios.defaults.baseURL = 'https://localhost:7267'
+axios.defaults.baseURL = 'https://localhost:7189'
 
 new Vue({
   router,

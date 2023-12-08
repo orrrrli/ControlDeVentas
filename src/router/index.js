@@ -3,13 +3,16 @@ import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import categoria from '../components/Almacen/categorias.vue'
 import articulos from '../components/Almacen/articulos.vue'
-import ventas from '../components/Ventas/ventas.vue'
+import Proveedores from '../components/Compras/Proveedores.vue'
 import clientes from '../components/Ventas/clientes.vue'
+import ventas from '../components/Ventas/ventas.vue'
 import roles from '../components/Usuarios/roles.vue'
 import usuarios from '../components/Usuarios/usuarios.vue'
 import compras from '../components/Consultas/compras.vue'
 import consultaVentas from '../components/Consultas/consultaVentas.vue'
 import Ingresos from '../components/Compras/Ingresos.vue'
+import GraficasIngresos from '../components/Graficas/GraficasIngresos.vue'
+import GraficasVentas from '../components/Graficas/GraficasVentas.vue'
 
 Vue.use(VueRouter)
 
@@ -30,9 +33,9 @@ const routes = [
     component: categoria
   },
   {
-    path: '/ventas',
-    name: 'ventas',
-    component: ventas
+    path: '/Proveedores',
+    name: 'Proveedores',
+    component: Proveedores
   },
   {
     path: '/clientes',
@@ -63,6 +66,21 @@ const routes = [
     path: '/Ingresos',
     name: 'Ingresos',
     component: Ingresos
+  },
+  {
+    path: '/GraficasIngresos',
+    name: 'GraficasIngresos',
+    component: GraficasIngresos
+  },
+  {
+    path: '/GraficasVentas',
+    name: 'GraficasVentas',
+    component: GraficasVentas
+  },
+  {
+    path: '/ventas',
+    name: 'ventas',
+    component: ventas
   }
 ]
 

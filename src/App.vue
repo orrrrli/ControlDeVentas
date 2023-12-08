@@ -54,7 +54,36 @@
               </v-list-item-title>
             </v-list-item-content>
             </v-list-item>
+          <v-list-item :to="{ name: 'clientes'}">
+              <v-list-item-action>
+                <v-icon>table_chart</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Gestion de Clientes
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           <v-list-item :to="{ name: 'ventas'}">
+            <v-list-item-action>
+              <v-icon>table_chart</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                Ventas
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          </v-list-group>
+          <v-list-group>
+            <v-list-item slot="activator">
+            <v-list-item-content>
+              <v-list-item-title>
+                Ingresos
+              </v-list-item-title>
+            </v-list-item-content>
+            </v-list-item>
+          <v-list-item :to="{ name: 'Proveedores'}">
               <v-list-item-action>
                 <v-icon>table_chart</v-icon>
               </v-list-item-action>
@@ -64,13 +93,13 @@
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-          <v-list-item :to="{ name: 'clientes'}">
+          <v-list-item :to="{ name: 'Ingresos'}">
             <v-list-item-action>
               <v-icon>table_chart</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
-                Gestión de Clientes
+                Ingresos
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -118,7 +147,7 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
-                  Consultar Compras
+                  Consultar Ventas
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -128,7 +157,7 @@
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
-                Consultar Ventas
+                Consultar Ingresos
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -137,17 +166,27 @@
             <v-list-item slot="activator">
             <v-list-item-content>
               <v-list-item-title>
-                Ingresos
+                Graficas
               </v-list-item-title>
             </v-list-item-content>
             </v-list-item>
-          <v-list-item :to="{ name: 'Ingresos'}">
+          <v-list-item :to="{ name: 'GraficasVentas'}">
+              <v-list-item-action>
+                <v-icon>table_chart</v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  Graficas Ventas
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          <v-list-item :to="{ name: 'GraficasIngresos'}">
             <v-list-item-action>
               <v-icon>table_chart</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
-                Ver Ingresos
+                GraficasIngresos
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
