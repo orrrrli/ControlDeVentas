@@ -4,7 +4,7 @@
 <template>
     <v-layout align-start>
         <v-flex>
-            <h3 class="text-center mb-5 primary--text">Gestion de Ingresos</h3>
+            <h3 class="text-center mb-5 primary--text">Consulta de Ingresos</h3>
             <v-container v-if="verListadoDeIngresos==1">
                 <v-toolbar flat color="white">
                     <v-toolbar-title>Ingresos</v-toolbar-title>

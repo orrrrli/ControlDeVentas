@@ -113,7 +113,7 @@ export default {
       { text: 'Nombre', value: 'nombrePersona', align: 'start', sortable: true },
       { text: 'tipo de persona', value: 'tipoPersona', align: 'start', sortable: true },
       { text: 'Email', value: 'emailPersona', align: 'start', sortable: true },
-      { text: 'Tipo Documento', value: 'tipoDocumento', align: 'start', sortable: true },
+      { text: 'Tipo Documento', value: 'tipodocumento', align: 'start', sortable: true },
       { text: 'No. Documento', value: 'numeroDocumento', align: 'start', sortable: true },
       { text: 'Telefono', value: 'telefonoPersona', align: 'start', sortable: true },
       { text: 'Acciones', value: 'actions', sortable: false }

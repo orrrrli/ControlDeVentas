@@ -33,9 +33,13 @@
                     <v-text-field v-model="descripcion" label="Descripción"></v-text-field>
                   </v-col>
                 </v-row>
+                <div v-if="ValidaMensajes.length > 0">
+                  <ul>
+                    <li v-for="message in ValidaMensajes" :key="message" class="red--text">{{ message }}</li>
+                  </ul>
+                </div>
               </v-container>
             </v-card-text>
-
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="close">
@@ -108,7 +112,7 @@ export default {
     adAccion: 0,
     adNombre: '',
     adIdCategoria: '',
-
+    ValidaMensajes: [],
     validar () {
       this.valida = 0
       this.ValidaMensajes = []
@@ -247,6 +251,7 @@ export default {
       this.idCategoria = ''
       this.nombreCategoria = ''
       this.descripcion = ''
+      this.ValidaMensajes = []
     },
     modalActivaDesactivar (accion, item) {
       this.adModal = 1
@@ -311,7 +316,7 @@ export default {
           doc.text('Listado de Articulos', 200, 50)
         }
       })
-      doc.save('Lista de Categorias.pdf')
+      doc.save('ListadeCategorias.pdf')
     }
 
   }

@@ -300,17 +300,15 @@ export default {
     },
     agregarArticulo_A_Detalles (data = []) {
       this.ErrorArticulo = null
-      if (this.buscaDuplicado(data.IdArticulo) === 1) {
+      if (this.buscaDuplicado(data.idArticulo) === 1) {
         this.ErrorArticulo = 'El Articulo ya ha sido agregado'
       } else {
-        this.DetallesIngresos.push(
-          {
-            idArticulo: data.idArticulo,
-            nombreArticulo: data.nombreArticulo,
-            cantidad: 1,
-            precio: data.precioVenta
-          }
-        )
+        this.DetallesIngresos.push({
+          idArticulo: data.idArticulo,
+          nombreArticulo: data.nombreArticulo,
+          cantidad: 1,
+          precio: data.precioVenta
+        })
         console.log(this.DetallesIngresos)
       }
     },
@@ -318,7 +316,9 @@ export default {
     buscaDuplicado (id) {
       let encontro = 0
       for (let i = 0; i < this.DetallesIngresos.length; i++) {
-        if (this.DetallesIngresos[i].idArticulo === id) { encontro = 1 }
+        if (this.DetallesIngresos[i].idArticulo === id) {
+          encontro = 1
+        }
       }
       return encontro
     },
@@ -358,7 +358,7 @@ export default {
 
     ListandoArticulos () {
       const me = this
-      axios.get('api/Articulos/ListarArticulo/' + me.Criterio).then(function (response) {
+      axios.get('api/Ingresos/SeleccionaArticuloIngreso/').then(function (response) {
         me.ListaDeArticulos = response.data
         console.log(me.ListaDeArticulos)
       }).catch(function (error) {

@@ -52,6 +52,11 @@
                     <v-text-field v-model="descripcionArticulo" label="Descripción"></v-text-field>
                   </v-col>
                 </v-row>
+                <div v-if="ValidaMensajes.length > 0">
+                  <ul>
+                    <li v-for="message in ValidaMensajes" :key="message" class="red--text">{{ message }}</li>
+                  </ul>
+                </div>
               </v-container>
             </v-card-text>
 
@@ -140,7 +145,7 @@ export default {
     articulos: [],
     idCategoria: '',
     categorias: [],
-
+    ValidaMensajes: [],
     adModal: 0,
     adAccion: 0,
     adNombre: '',
@@ -394,6 +399,7 @@ export default {
       this.stock = 0
       this.descripcionArticulo = ''
       this.estado = true
+      this.ValidaMensajes = []
     },
 
     ListadoArticulosPDF () {

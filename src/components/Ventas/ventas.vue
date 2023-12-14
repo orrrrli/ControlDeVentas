@@ -17,6 +17,7 @@
 
                 <v-data-table :headers="cabeceraVentas" :items="ListaDeVentas" :search="search" class="elevation-1">
                     <template v-slot:item.actions="{item}">
+                      <div style="display: flex;">
                         <v-icon medium color="gray" class="mr-2" size="x-large" @click="verDetalles(item)">mdi-eye</v-icon>
                         <template v-if="item.estado">
                             <v-icon medium color="green darken-2" class="mr-2" size="x-large" @click="modalActivarDesactivar(2,item)">check_cricle</v-icon>
@@ -24,7 +25,8 @@
                         <template v-else>
                             <v-icon medium color="red darken-2" class="mr-2" size="x-large">cancel</v-icon>
                         </template>
-                    </template>
+                      </div>
+                      </template>
                     <template v-slot:no-data>
                         <v-btn color="dark">No se recibieron datos del servidor</v-btn>
                     </template>
@@ -370,7 +372,7 @@ export default {
 
     ListandoArticulos () {
       const me = this
-      axios.get('api/Articulos/ListarArticulo/' + me.Criterio).then(function (response) {
+      axios.get('api/Ingresos/SeleccionaArticuloIngreso/').then(function (response) {
         me.ListaDeArticulos = response.data
         console.log(me.ListaDeArticulos)
       }).catch(function (error) {
