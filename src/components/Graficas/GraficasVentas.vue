@@ -15,8 +15,7 @@
 
 <script>
 import axios from 'axios'
-// eslint-disable-next-line no-unused-vars
-import { hart } from 'chart.js'
+import Chart from 'chart.js'
 
 export default {
   data () {
@@ -51,7 +50,7 @@ export default {
         me.totalMeses.push(x.mesesValores)
       })
       const ctx = document.getElementById('myChart')
-      // eslint-disable-next-line no-unused-vars, no-undef
+      // eslint-disable-next-line no-unused-vars
       const myChart = new Chart(ctx, {
         type: 'bar',
         data: {

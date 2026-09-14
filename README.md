@@ -142,11 +142,6 @@ development.
 
 Stated rather than hidden:
 
-- **The chart screens do not render.** `GraficasVentas.vue` and `GraficasIngresos.vue`
-  call `new Chart(ctx, ...)` expecting a global, but Chart.js is never registered as
-  one — there is no CDN tag and the local import is malformed (`import { hart }`).
-  Both throw `Chart is not defined` at runtime. The data-fetching half works; only the
-  rendering call is broken.
 - **PDF export is missing from the reporting screens** — see above.
 - **`vue-chartjs` is an unused dependency** — it is in `package.json` but imported
   nowhere.
