@@ -1,7 +1,3 @@
-<!-- eslint-disable no-unused-vars -->
-<!-- eslint-disable array-callback-return -->
-<!-- eslint-disable no-undef -->
-<!-- eslint-disable no-unused-vars -->
 <template>
     <v-container grid-list-m>
         <h2 class="text-center primary--text mb-5">Ingresos por meses del ultimo año</h2>
