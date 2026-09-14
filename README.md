@@ -1,77 +1,159 @@
+# Control de Ventas — Sales & Inventory Management System
 
-# Categorias Management Web Application
+A Vue 2 + Vuetify single-page application for running a small retail operation:
+inventory, purchasing, sales, customers, suppliers, users and roles, plus
+date-ranged reports and PDF exports.
 
-This project is a web application built with Vue.js for managing categories. It provides features for adding, editing, and deleting categories through a user-friendly interface. The application communicates with a backend API to perform CRUD (Create, Read, Update, Delete) operations on categories.
+This repository holds the **frontend**. It talks to an ASP.NET Core Web API backed by
+SQL Server, which lives separately — see [Backend](#backend).
 
-## Features
+Built as a university project (UABC, 2023).
 
-- **Category Management**: Add, edit, and delete categories.
-- **Validation**: Input validation for category name.
-- **Data Table**: View categories in a tabular format.
-- **Dialogs**: Use dialogs for adding and editing categories.
-- **RESTful API**: Communicate with a RESTful API to perform CRUD operations.
+---
 
-## Project Structure
+## Modules
 
-- **src**: Contains the main source code of the Vue.js application.
-  - **assets**: Static assets like images or fonts.
-  - **components**: Vue components used in the application.
-  - **views**: Top-level views for different sections of the app.
-  - **App.vue**: The root Vue component.
-  - **main.js**: The entry point of the Vue application.
-- **public**: Publicly accessible files (e.g., index.html).
+Thirteen screens across six domains, each routed and backed by its own API controller:
 
-## Getting Started
+| Domain | Screens | What it does |
+|---|---|---|
+| **Almacén** | Artículos · Categorías | Product catalogue, barcode lookup, category assignment |
+| **Compras** | Ingresos · Proveedores | Purchase entries with line items, supplier registry |
+| **Ventas** | Ventas · Clientes | Sales with line items, customer registry |
+| **Consultas** | Compras · Ventas | Date-range queries, drill-down into document line items |
+| **Gráficas** | Ingresos · Ventas | 12-month purchase and sales totals |
+| **Usuarios** | Usuarios · Roles | User accounts and role assignment |
 
-1. Clone the repository:
+---
 
-   ```bash
-   git clone https://github.com/orrrrli/ControlDeVentas.git
-   ```
+## Stack
 
-2. Navigate to the project directory:
+| Layer | Technology |
+|---|---|
+| **Framework** | Vue 2.6 (Options API) · Vue CLI |
+| **UI** | Vuetify 2.6 · Material Design Icons |
+| **Routing** | Vue Router 3 — 13 named routes |
+| **State** | Vuex 3 |
+| **HTTP** | axios, with `baseURL` configured globally in `main.js` |
+| **Charts** | Chart.js 2.9 |
+| **PDF export** | jsPDF · jspdf-autotable |
+| **Linting** | ESLint (standard config) + eslint-plugin-vue |
 
-   ```bash
-   cd ControlDeVentas
-   ```
+---
 
-3. Install dependencies:
+## Design notes
 
-   ```bash
-   npm install
-   ```
+Three decisions in here are worth pointing out, because they are what separate this
+from a tutorial CRUD.
 
-4. Configure API Endpoint:
+### Nothing is ever deleted
 
-   - Open the `src/views/Categorias.vue` file.
-   - Update the `axios` requests to point to your backend API.
+There is not a single `axios.delete` call in the codebase. Every "remove" action is a
+`PUT` to `Activar`/`Desactivar`:
 
-5. Run the development server:
+```
+PUT api/Articulos/DesactivarArticulos/{id}
+PUT api/Articulos/ActivarArticulos/{id}
+```
 
-   ```bash
-   npm run serve
-   ```
+Sales records reference articles, articles reference categories, and purchase entries
+reference suppliers. Hard-deleting any of them would either break referential
+integrity or silently orphan historical documents. Deactivation keeps the audit trail
+intact and keeps old invoices readable — and it makes the action reversible, so a
+mis-click is not a data-loss event.
 
-6. Access the application in your web browser at `http://localhost:8080`.
+### One `Personas` table, two roles
 
-## Usage
+Customers and suppliers are the same entity server-side, distinguished by type:
 
-- Visit the application in your web browser.
-- Use the "Nueva Categorias" button to add a new category.
-- Click the "Edit" icon to edit a category.
-- Click the "Delete" icon to delete a category.
-- Categories are displayed in a table with sorting capabilities.
+```
+GET api/Personas/ListarCliente
+GET api/Personas/ListarProvedores
+POST api/Personas/InsertarPersona     ← shared by both
+```
 
-## Contributing
+They carry identical fields (name, tax ID, address, phone, email), so splitting them
+into two tables would have duplicated the schema to encode nothing but a label.
 
-Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
+### Master–detail documents
 
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and commit them with clear messages.
-4. Push your changes to your fork.
-5. Create a pull request to the original repository.
+Purchases and sales are headers with line items. The list endpoint returns headers;
+the detail is fetched on demand:
 
-## License
+```
+GET api/Ingresos/ListarIngresos
+GET api/Ingresos/ListarDetalleIngreso/{id}     ← only when a row is expanded
+```
 
-This project was created as a practice for my university, but you can use it if it is useful to someone.
+Reports are range-scoped rather than paged (`ListadoRangoFechas/{from}/{to}`), which
+suits how the screens are actually used — you ask for a month, not for page 4.
+
+---
+
+## API surface
+
+Seven controllers:
+
+| Controller | Operations |
+|---|---|
+| `Articulos` | list · lookup by barcode · insert · modify · activate/deactivate |
+| `Categorias` | list · select · insert · modify · activate/deactivate |
+| `Ingresos` | list · detail · date range · chart data · insert · deactivate |
+| `Ventas` | list · detail · date range · chart data · deactivate |
+| `Personas` | list customers · list suppliers · select · insert · modify |
+| `Usuarios` | list · insert · modify · activate/deactivate |
+| `Roles` | list · select · insert · modify · activate/deactivate |
+
+### PDF export
+
+Six of the twelve screens export their current table via jsPDF + autotable:
+Artículos, Categorías, Clientes, Proveedores, Usuarios and Roles.
+
+Note which ones are missing it — Ventas, Ingresos and both Consultas screens. The
+master-data catalogues can be exported; the transactional records and the date-ranged
+reports, which are the ones an owner would actually want on paper, cannot.
+
+---
+
+## Running locally
+
+```bash
+npm install
+npm run serve      # http://localhost:8080
+```
+
+The API base URL is set in `src/main.js`:
+
+```js
+axios.defaults.baseURL = 'https://localhost:7189'
+```
+
+Point it at your backend before the app will load any data.
+
+### Backend
+
+Not included in this repository. It is an ASP.NET Core Web API over SQL Server
+exposing the seven controllers listed above, served on `https://localhost:7189` in
+development.
+
+---
+
+## Known limitations
+
+Stated rather than hidden:
+
+- **The chart screens do not render.** `GraficasVentas.vue` and `GraficasIngresos.vue`
+  call `new Chart(ctx, ...)` expecting a global, but Chart.js is never registered as
+  one — there is no CDN tag and the local import is malformed (`import { hart }`).
+  Both throw `Chart is not defined` at runtime. The data-fetching half works; only the
+  rendering call is broken.
+- **PDF export is missing from the reporting screens** — see above.
+- **`vue-chartjs` is an unused dependency** — it is in `package.json` but imported
+  nowhere.
+- **`categorias.vue` and `roles.vue` hardcode the absolute API URL** instead of using
+  the configured `baseURL`, so they ignore the setting in `main.js`.
+- **No authentication.** The app manages users and roles as data, but nothing gates
+  access to the screens themselves.
+- **Validation is hand-rolled** — each form builds a `ValidaMensajes` array in a
+  `validar()` method rather than using Vuetify's `:rules`, so the messages are
+  consistent within a form but not across them.
